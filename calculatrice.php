@@ -2,35 +2,24 @@
 
 declare(strict_types=1);
 
-function calcul(string $n1, string $operator ,string $n2)
+function calcul(string $n1, string $operator, string $n2)
 {
-    if(validNumber($n1) && validNumber($n2) && isValidOperator($operator)){
-        $expression = "$n1 $operator $n2";
-        $resultat=0 ;
-        eval("\$resultat = $expression;");
+    if (validNumber($n1) && validNumber($n2) && isValidOperator($operator)) {
+        $resultat = 0;
+        eval("\$resultat = $n1 $operator $n2;");
         return $resultat;
     }
-
     return "impossible";
 }
 
 function validNumber($str)
 {
-    $str = trim($str);
-    if(!empty($str)){
-        if(is_numeric($str)){
-            return true;
-        }
-    }
+    return !empty($str) && is_numeric($str);
 }
 
-function isValidOperator($op) : bool {
-    if(strlen($op)==1){
-        if (preg_match("/[-+\/\*]/", $op)) {
-            return true;
-        } 
-    }
-    return false;
+function isValidOperator($op): bool
+{
+    return strlen($op) === 1 && preg_match("/[-+\/\*]/", $op);
 }
 
-echo calcul("2","*","2");
+echo calcul("2", "*", "2");
