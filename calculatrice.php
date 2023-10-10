@@ -22,4 +22,4 @@ function isValidOperator($op): bool
     return strlen($op) === 1 && preg_match("/[-+\/\*]/", $op);
 }
 
-echo calcul("2", "*", "2");
+echo calcul("2", "/", "2");
