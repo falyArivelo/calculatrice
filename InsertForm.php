@@ -20,6 +20,15 @@
         <input type="text" name="telephone" placeholder="telephone">
         <input type="text" name="adresse" placeholder="adresse">
         <input type="submit" value="inserer" name="save">
+        <?php
+        // Affichez les erreurs s'il y en a
+        if (isset($_GET['errors']) && !empty($_GET['errors'])) {
+            $errors = $_GET['errors'];
+            echo "<div class='errors' style='color:red'> ";
+            echo $errors;
+            echo "</div>";
+        }
+        ?>
     </form>
 </body>
 

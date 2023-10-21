@@ -3,37 +3,39 @@
 declare(strict_types=1); //strictement typé
 
 include('Connection.php');
+include('validation.php');
 
 
-
-function getFullName(string $nom, ?string $prenom): bool
+function save(string $nom, ?string $prenom, string $age, string $telephone, string $adresse)
 {
+    $errors = validatePersonne($nom,  $prenom,  $age, $telephone, $adresse);
 
-    if (!$prenom && valid($nom))
-        return true;
-    else if (valid($nom) && valid($prenom)) {
-        return true;
-    }
-    return false;
-}
-
-function valid($name)
-{
-    return !empty($name) && preg_match('/^[a-zA-Z. -]+$/', $name) && preg_match('/^[^0-9]*$/', $name);
-}
-
-function save($nom, $prenom, $age, $telephone, $adresse)
-{
-    $connection = dbconnect();
-    if (getFullName($nom, $prenom)) {
+    if (empty($errors)) {
+        $connection = dbconnect();
         $sql = "INSERT INTO personnes (nom, prenom,age,telephone,adresse) VALUES ('$nom', '$prenom',$age,'$telephone','$adresse')";
         mysqli_query($connection, $sql);
+        header('location:index.php');
     } else {
-        echo "erreur";
+        $errorString = implode("<br>", $errors);
+        header("Location: InsertForm.php?errors=$errorString");
+    }
+}
+function update(int $id, string $nom, ?string  $prenom,string $age, string $telephone, string $adresse)
+{
+    $errors = validatePersonne($nom,  $prenom,  $age, $telephone, $adresse);
+    if (empty($errors)) {
+        $connection = dbconnect();
+        $sql = "UPDATE  personnes set nom = '$nom',prenom = '$prenom',age = '$age',telephone = '$telephone',adresse = '$adresse' where id = $id";
+        mysqli_query($connection, $sql);
+        header('location:index.php');
+    } else {
+        $errorString = implode("<br>", $errors);
+        header("Location: UpdateForm.php?errors=$errorString");
     }
 }
 
-function find()
+
+function find() : array
 {
     $connection = dbconnect();
 
@@ -46,7 +48,7 @@ function find()
     return $personnes;
 }
 
-function findById($id)
+function findById(int $id) : array
 {
     $connection = dbconnect();
 
@@ -59,21 +61,14 @@ function findById($id)
     return $personne;
 }
 
-function delete($id)
+function delete(int $id)
 {
     $connection = dbconnect();
-
     $sql = "DELETE FROM personnes where id = $id";
     mysqli_query($connection, $sql);
 }
 
-function update($id, $nom, $prenom, $age, $telephone, $adresse)
-{
-    $connection = dbconnect();
 
-    $sql = "UPDATE  personnes set nom = '$nom',prenom = '$prenom',age = '$age',telephone = '$telephone',adresse = '$adresse' where id = $id";
-    mysqli_query($connection, $sql);
-}
 
 // find($connection);
 
